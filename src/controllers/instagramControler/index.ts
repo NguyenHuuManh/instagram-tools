@@ -5,36 +5,36 @@ const path = require("path");
 import userModel from "../../models/user";
 const pathUpload = "../.././../upload";
 
-const { IgApiClient } = require("instagram-private-api");
+// const { IgApiClient } = require("instagram-private-api");
 
-const ig = new IgApiClient();
-// { password: "123aA@123", username: "HaDN123aA" }
-export const loginIstagram = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
-  ig.state.generateDevice(username);
-  const response = await ig.account.login(username, password);
-  res.json(response);
-};
+// const ig = new IgApiClient();
+// // { password: "123aA@123", username: "HaDN123aA" }
+// export const loginIstagram = async (req: Request, res: Response) => {
+//   const { username, password } = req.body;
+//   ig.state.generateDevice(username);
+//   const response = await ig.account.login(username, password);
+//   res.json(response);
+// };
 
-export const postContent = async (req: Request, res: Response) => {
-  try {
-    const { path, mimetype } = req.file as Express.Multer.File;
-    let fileBuffer = await fs.promises.readFile(path as any);
-    const isJPG = mimetype == "image/jpg";
-    if (!isJPG) fileBuffer = await sharp(path).jpeg().toBuffer();
-    // console.log(fileBuffer, "===fileBuffer====");
-    const captionTxt = req.body.caption;
-    const result = await ig.publish.photo({
-      caption: captionTxt,
-      file: fileBuffer,
-    });
-    // console.log(result, "===result===");
-    res.json(result);
-  } catch (error: any) {
-    // console.log(error, "====err===");
-    res.json(error?.error ?? error);
-  }
-};
+// export const postContent = async (req: Request, res: Response) => {
+//   try {
+//     const { path, mimetype } = req.file as Express.Multer.File;
+//     let fileBuffer = await fs.promises.readFile(path as any);
+//     const isJPG = mimetype == "image/jpg";
+//     if (!isJPG) fileBuffer = await sharp(path).jpeg().toBuffer();
+//     // console.log(fileBuffer, "===fileBuffer====");
+//     const captionTxt = req.body.caption;
+//     const result = await ig.publish.photo({
+//       caption: captionTxt,
+//       file: fileBuffer,
+//     });
+//     // console.log(result, "===result===");
+//     res.json(result);
+//   } catch (error: any) {
+//     // console.log(error, "====err===");
+//     res.json(error?.error ?? error);
+//   }
+// };
 
 export const autoPostOnAccount = async (req: Request, res: Response) => {
   try {

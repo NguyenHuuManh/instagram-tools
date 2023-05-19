@@ -24,7 +24,6 @@ const userModel = async ({ username, password }: paramLogin) => {
 
   const postContent = async (file: Buffer, caption: string) => {
     try {
-      // const ig = new IgApiClient();
       const result = await ig.publish.photo({ caption, file });
       return result;
     } catch (error: any) {
