@@ -1,26 +1,21 @@
-import { Request, Response } from "express";
-import fs from "fs";
-import sharp from "sharp";
 import { IgApiClient } from "instagram-private-api";
-// const { IgApiClient } = require("instagram-private-api");
 
 type paramLogin = {
   username: string;
   password: string;
 };
 const userModel = async ({ username, password }: paramLogin) => {
-  let ig: any;
-  await (async () => {
-    try {
-      console.log(username, password, "=====username, password====");
-      ig = new IgApiClient();
-      ig.state.generateDevice(username);
-      const resLogin = await ig.account.login(username, password);
-      console.log(resLogin, "===resLogin===");
-    } catch (error) {
-      console.log(error, "====error login====");
+  let ig: IgApiClient;
+  const login = async () => {
+    ig = new IgApiClient();
+    await ig.state.generateDevice(username);
+    const resLogin = await ig.account.login(username, password);
+    if (resLogin.full_name) {
+      const storeCookies = await ig.state.serializeCookieJar();
+      return { resLogin, storeCookies };
     }
-  })();
+    throw resLogin;
+  };
 
   const postContent = async (file: Buffer, caption: string) => {
     try {
@@ -32,7 +27,16 @@ const userModel = async ({ username, password }: paramLogin) => {
     }
   };
 
-  return { postContent };
+  const logout = async () => {
+    try {
+      const res = await ig.account.logout();
+      return res;
+    } catch (error) {
+      return error;
+    }
+  };
+
+  return { postContent, logout, login, username, password };
 };
 
 export default userModel;

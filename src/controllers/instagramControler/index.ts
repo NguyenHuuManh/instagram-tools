@@ -1,20 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import fs from "fs";
 import sharp from "sharp";
-const path = require("path");
+import { excuteQuery } from "../../connectdb";
 import userModel from "../../models/user";
+import { json } from "body-parser";
+const path = require("path");
 const pathUpload = "../.././../upload";
-
-// const { IgApiClient } = require("instagram-private-api");
-
-// const ig = new IgApiClient();
-// // { password: "123aA@123", username: "HaDN123aA" }
-// export const loginIstagram = async (req: Request, res: Response) => {
-//   const { username, password } = req.body;
-//   ig.state.generateDevice(username);
-//   const response = await ig.account.login(username, password);
-//   res.json(response);
-// };
 
 // export const postContent = async (req: Request, res: Response) => {
 //   try {
@@ -35,8 +26,31 @@ const pathUpload = "../.././../upload";
 //     res.json(error?.error ?? error);
 //   }
 // };
+export const LoginAccount = async (
+  req: Request,
+  res: Response,
+  next: Function
+) => {
+  try {
+    const user = await userModel(req.body);
+    const resLogin: any = await user.login();
+    const sql = `INSERT INTO social.account ( username, password, cookies) VALUES ('${
+      user.username
+    }', '${user.password}', '${JSON.stringify(resLogin.storeCookies)}');`;
+    excuteQuery(sql, (ressult) => {
+      console.log(ressult, "===result====");
+      res.json({ code: "200", message: "Thêm mới thành công" });
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-export const autoPostOnAccount = async (req: Request, res: Response) => {
+export const autoPostOnAccount = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user = await userModel(req.body);
     // const file = req.file as Express.Multer.File;
@@ -60,6 +74,26 @@ export const autoPostOnAccount = async (req: Request, res: Response) => {
 
     // user.postContent(file, caption, { onError: res.json, onSuccess: res.json });
   } catch (error: any) {
-    console.log(error, "====error===");
+    next(error);
+  }
+};
+
+export const getListAccount = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const sql = "SELECT username, password FROM social.account";
+    const result: any = await excuteQuery(sql);
+    Object.keys(result).forEach(function (key) {
+      var row = result[key];
+      console.log(row, "=====name===");
+    });
+
+    res.json({ message: "success" });
+    // res.send(result);
+  } catch (error) {
+    next(error);
   }
 };
