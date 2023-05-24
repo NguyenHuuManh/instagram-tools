@@ -7,25 +7,7 @@ const pool = mysql.createPool({
   database: "social", // Thay đổi tùy theo tên cơ sở dữ liệu bạn muốn kết nối
 });
 
-const excuteQuery = async (sql: string, callback: (result: any) => void) => {
-  // try {
-  //   // Kết nối vào cơ sở dữ liệu
-  //   connection.connect((err: any) => {
-  //     if (err) throw err;
-  //   });
-  //   return await connection.query(sql, (error: MysqlError, results: any) => {
-  //     if (error) {
-  //       console.error("excute faild: " + error.stack);
-  //       throw error;
-  //     }
-  //     connection.end();
-  //     return results;
-  //   });
-  // } catch (error) {
-  //   connection.end();
-  //   throw error;
-  // }
-
+const excuteQuery = async (sql: string, callback?: (result: any) => void) => {
   pool.getConnection(function (err, connection) {
     if (err) {
       console.error("Lỗi khi kết nối: " + err.stack);
@@ -37,7 +19,7 @@ const excuteQuery = async (sql: string, callback: (result: any) => void) => {
         console.error("excute faild: " + error.stack);
         throw error;
       }
-      callback(results);
+      callback?.(results);
     });
 
     // Khi không cần thiết nữa, hãy giải phóng kết nối

@@ -85,14 +85,9 @@ export const getListAccount = async (
 ) => {
   try {
     const sql = "SELECT username, password FROM social.account";
-    const result: any = await excuteQuery(sql);
-    Object.keys(result).forEach(function (key) {
-      var row = result[key];
-      console.log(row, "=====name===");
+    excuteQuery(sql, (result) => {
+      res.json(result);
     });
-
-    res.json({ message: "success" });
-    // res.send(result);
   } catch (error) {
     next(error);
   }
