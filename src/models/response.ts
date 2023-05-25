@@ -5,10 +5,10 @@ type RESPONSE_TYPE<T = any> = {
   code?: number;
   data?: T;
 };
-const ResponseModel = ({ code, message, ...rest }: RESPONSE_TYPE) => ({
+const ResponseModel = ({ code, message, data }: RESPONSE_TYPE) => ({
   code: code ?? REPONSE_CODE.SUCCESS,
   message: message ?? "Thành công",
-  ...rest,
+  data: data ?? null,
 });
 
 export default ResponseModel;

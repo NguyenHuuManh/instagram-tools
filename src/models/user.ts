@@ -1,14 +1,37 @@
 import { IgApiClient } from "instagram-private-api";
+type cookieType = {
+  key: string;
+  path: string;
+  value: string;
+  domain: string;
+  maxAge: number;
+  secure: boolean;
+  expires: string;
+  creation: string;
+  hostOnly: boolean;
+  lastAccessed: string;
+};
 
 type paramLogin = {
   username: string;
   password: string;
+  cookieSerialzed?: {
+    version: string;
+    storeType: string;
+    rejectPublicSuffixes: boolean;
+    cookies: cookieType[];
+  };
 };
-const userModel = async ({ username, password }: paramLogin) => {
+const userModel = async ({
+  username,
+  password,
+  cookieSerialzed,
+}: paramLogin) => {
   let ig: IgApiClient;
+
   const login = async () => {
     ig = new IgApiClient();
-    await ig.state.generateDevice(username);
+    ig.state.generateDevice(username);
     const resLogin = await ig.account.login(username, password);
     if (resLogin.full_name) {
       const storeCookies = await ig.state.serializeCookieJar();

@@ -2,12 +2,14 @@ import { NextFunction, Request, Response } from "express";
 import fs from "fs";
 import sharp from "sharp";
 import { excuteQuery } from "../../connectdb";
-import userModel from "../../models/user";
-import { json } from "body-parser";
-import ResponseModel from "../../models/response";
 import { REPONSE_CODE } from "../../constant";
+import ResponseModel from "../../models/response";
+import userModel from "../../models/user";
+const cron = require("node-cron");
 const path = require("path");
 const pathUpload = "../.././../upload";
+
+const clients = new Map();
 
 // export const postContent = async (req: Request, res: Response) => {
 //   try {
@@ -115,6 +117,74 @@ export const deleteAccount = async (
         })
       );
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const loginWithCookies = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.body.id;
+    const sql = `SELECT * from social.account where idaccount=${id}`;
+    excuteQuery(sql, async (results) => {
+      if (results.length > 0) {
+        const { username, password } = results[0];
+        const user = await userModel({
+          username,
+          password,
+        });
+        const restoreLogin = await user.login();
+        clients.set(`${id}`, user);
+        res.json(
+          ResponseModel({ message: "Đăng nhập thành công", data: restoreLogin })
+        );
+        return;
+      }
+      res.json(
+        ResponseModel({
+          message: "Không tìm thấy tài khoản với id:" + id,
+          code: REPONSE_CODE.FAILD,
+        })
+      );
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getStatusAccount = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.params?.id;
+    const account = clients.get(`${id}`);
+    if (account) {
+      res.json(ResponseModel({ data: { status: "ONLINE" } }));
+    } else {
+      res.json(ResponseModel({ data: { status: "OFFLINE" } }));
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const schedulePost = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const cronJob = cron.schedule("* * * * *", () => {
+      console.log("==========task running=====");
+    });
+    cronJob.start();
+    res.json(ResponseModel({ message: "Đặt lịch thành công" }));
   } catch (error) {
     next(error);
   }
