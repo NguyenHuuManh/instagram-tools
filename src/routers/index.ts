@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   LoginAccount,
   autoPostOnAccount,
+  deleteAccount,
   getListAccount,
 } from "../controllers/instagramControler";
 import pool from "../connectdb";
@@ -16,6 +17,7 @@ const router = Router();
 router.post("/auto-post-on-account", autoPostOnAccount);
 router.post("/login-on-account", LoginAccount);
 router.get("/list-account", getListAccount);
+router.delete("/delete-account/:id", deleteAccount);
 router.post("/test-logging", (req, res, next) => {
   const error = new Error("Something went wrong");
   next(error);

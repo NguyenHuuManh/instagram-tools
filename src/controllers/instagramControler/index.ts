@@ -4,6 +4,8 @@ import sharp from "sharp";
 import { excuteQuery } from "../../connectdb";
 import userModel from "../../models/user";
 import { json } from "body-parser";
+import ResponseModel from "../../models/response";
+import { REPONSE_CODE } from "../../constant";
 const path = require("path");
 const pathUpload = "../.././../upload";
 
@@ -84,9 +86,34 @@ export const getListAccount = async (
   next: NextFunction
 ) => {
   try {
-    const sql = "SELECT username, password FROM social.account";
+    const sql = "SELECT username, password,cookies FROM social.account";
     excuteQuery(sql, (result) => {
-      res.json(result);
+      res.json(ResponseModel({ data: result }));
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteAccount = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.params.id;
+    const sql = `DELETE FROM social.account WHERE idaccount=${id};`;
+    excuteQuery(sql, (result) => {
+      if (result.affectedRows > 0) {
+        res.json(ResponseModel({ message: "Xóa tài khoản thành công" }));
+        return;
+      }
+      res.json(
+        ResponseModel({
+          message: "Tài khoản không tồn tại",
+          code: REPONSE_CODE.FAILD,
+        })
+      );
     });
   } catch (error) {
     next(error);
