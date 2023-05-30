@@ -17,8 +17,9 @@ app.use(express_1.default.static("public"));
 app.use(middleware_1.LogRequest);
 app.use("/", routers_1.default);
 app.use(middleware_1.errorHandler);
-const server = app.listen(8888, () => {
-    console.log(`Server is running on port 8888`);
+const port = process.env.PORT || 3000;
+const server = app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });
 exports.default = server;
 // "start": "tsc && nodemon --exec  node dist/server.js"

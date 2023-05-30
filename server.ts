@@ -13,8 +13,9 @@ app.use(express.static("public"));
 app.use(LogRequest);
 app.use("/", router);
 app.use(errorHandler);
-const server = app.listen(8888, () => {
-  console.log(`Server is running on port 8888`);
+const port = process.env.PORT || 3000;
+const server = app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
 
 export default server;
