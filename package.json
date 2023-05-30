@@ -15,7 +15,8 @@
   "scripts": {
     "dev": "ts-node-dev --respawn server.ts",
     "start": "node dist/server.js",
-    "build": "tsc"
+    "build": "tsc",
+    "deploy":"git push heroku master"
   },
   "name": "nodejs-base",
   "version": "1.0.0",
