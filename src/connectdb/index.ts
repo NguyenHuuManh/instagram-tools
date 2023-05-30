@@ -3,7 +3,8 @@ import mysql, { MysqlError } from "mysql";
 const pool = mysql.createPool({
   host: "localhost", // Thay đổi tùy theo host của MySQL của bạn
   user: "root", // Thay đổi tùy theo tên người dùng MySQL của bạn
-  password: "123aA@123", // Thay đổi tùy theo mật khẩu của MySQL của bạn
+  // password: "123aA@123", // Thay đổi tùy theo mật khẩu của MySQL của bạn
+  password: "nhm090899",
   database: "social", // Thay đổi tùy theo tên cơ sở dữ liệu bạn muốn kết nối
 });
 

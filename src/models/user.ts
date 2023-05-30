@@ -41,13 +41,17 @@ const userModel = async ({
   };
 
   const postContent = async (file: Buffer, caption: string) => {
-    try {
-      const result = await ig.publish.photo({ caption, file });
-      return result;
-    } catch (error: any) {
-      console.log(error, "====err post content ===");
-      return error;
-    }
+    const result = await ig.publish.photo({ caption, file });
+    return result;
+  };
+
+  const postVideo = async (
+    video: Buffer,
+    caption: string,
+    coverImage: Buffer
+  ) => {
+    const result = await ig.publish.video({ caption, video, coverImage });
+    return result;
   };
 
   const logout = async () => {
@@ -59,7 +63,7 @@ const userModel = async ({
     }
   };
 
-  return { postContent, logout, login, username, password };
+  return { postContent, logout, login, username, password, postVideo };
 };
 
 export default userModel;
