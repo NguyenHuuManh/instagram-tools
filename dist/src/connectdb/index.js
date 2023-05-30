@@ -18,7 +18,8 @@ const mysql_1 = __importDefault(require("mysql"));
 const pool = mysql_1.default.createPool({
     host: "localhost",
     user: "root",
-    password: "123aA@123",
+    // password: "123aA@123", // Thay đổi tùy theo mật khẩu của MySQL của bạn
+    password: "nhm090899",
     database: "social", // Thay đổi tùy theo tên cơ sở dữ liệu bạn muốn kết nối
 });
 const excuteQuery = (sql, callback) => __awaiter(void 0, void 0, void 0, function* () {
