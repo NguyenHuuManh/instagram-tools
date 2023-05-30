@@ -13,8 +13,9 @@
     "typescript": "^5.0.4"
   },
   "scripts": {
-    "start": "ts-node-dev --respawn server.ts",
-    "build":"tsc"
+    "dev": "ts-node-dev --respawn server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc"
   },
   "name": "nodejs-base",
   "version": "1.0.0",
